@@ -1,0 +1,22 @@
+name: SDK Upload
+description: Upload a directory to the Ably SDK Team S3 bucket.
+author: Ably
+branding:
+  icon: upload-cloud
+  color: orange
+runs:
+  using: node14
+  main: dist/index.js
+inputs:
+  s3AccessKeyId:
+    description: AWS IAM user's access key id.
+    required: true
+  s3AccessKey:
+    description: AWS IAM user's secret access key.
+    required: true
+  sourcePath:
+    description: What to upload, relative to repository root.
+    required: true
+  destinationPath:
+    description: Where to upload, relative to resolved object prefix.
+    required: false
