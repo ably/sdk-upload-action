@@ -1,5 +1,5 @@
-const core = require('@actions/core');
-const { S3Client } = require("@aws-sdk/client-s3");
+import core from '@actions/core';
+import { S3Client } from "@aws-sdk/client-s3";
 
 const s3ClientConfig = {
   // RegionInputConfig
