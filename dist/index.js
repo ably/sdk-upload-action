@@ -110,7 +110,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             Bucket: bucketName,
             Body: body,
             ACL: 'public-read',
-            ContentType: mime_types_1.lookup(file) || 'text/plain',
+            ContentType: mime_types_1.lookup(file) || 'application/octet-stream',
         });
     }));
 });
