@@ -17,6 +17,12 @@ inputs:
   sourcePath:
     description: What to upload, relative to repository root.
     required: true
+  githubToken:
+    description: This should be a token with access to the repository scoped in as a secret.
+    required: true
+  taskName:
+    description: The name of the task, for example `deploy`
+    required: true
   destinationPath:
     description: Where to upload, relative to resolved object prefix.
     required: false

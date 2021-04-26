@@ -23,6 +23,25 @@ module.exports = JSON.parse("{\"name\":\"@aws-sdk/client-sso\",\"description\":\
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -38,7 +57,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core_1 = __importDefault(__nccwpck_require__(2186));
-const github_1 = __nccwpck_require__(5438);
+const github_1 = __importStar(__nccwpck_require__(5438));
 const client_s3_1 = __nccwpck_require__(9690);
 const path_1 = __importDefault(__nccwpck_require__(5622));
 const fs_1 = __importDefault(__nccwpck_require__(5747));
@@ -53,17 +72,23 @@ if (typeof githubRef !== 'string') {
     core_1.default.setFailed('GITHUB_REF environment variable not set');
     process.exit(1);
 }
+const githubToken = core_1.default.getInput('githubToken');
+const octokit = github_1.default.getOctokit(githubToken);
 const evt = JSON.parse(fs_1.default.readFileSync(githubEventPath, 'utf8'));
 // githubRef is in the form 'refs/heads/branch_name' so we have to slice away the 'refs/heads/' bit
 const branchName = githubRef.split('/').slice(2).join('/');
 const bucketName = 'sdk.ably.com';
 const sourcePath = path_1.default.resolve(core_1.default.getInput('sourcePath'));
 const destinationPath = path_1.default.resolve((_a = core_1.default.getInput('destinationPath')) !== null && _a !== void 0 ? _a : '');
-let keyPrefix = `builds/${github_1.context.repo}/`;
+const taskName = core_1.default.getInput('taskName');
+let deploymentRef;
+let keyPrefix = `builds/${github_1.context.repo.owner}/${github_1.context.repo.repo}/`;
 if (github_1.context.eventName === 'pull_request') {
+    deploymentRef = evt.pull_request.head.sha;
     keyPrefix += `pull/${evt.pull_request.number}/`;
 }
 else if (github_1.context.eventName === 'push' && branchName === 'main') {
+    deploymentRef = github_1.context.sha;
     keyPrefix += 'main/';
 }
 else {
@@ -101,18 +126,44 @@ const upload = (params) => __awaiter(void 0, void 0, void 0, function* () {
     yield s3Client.send(command);
     core_1.default.info(`uploaded: ${params.Key}`);
 });
+const createDeployment = () => __awaiter(void 0, void 0, void 0, function* () {
+    const response = yield octokit.repos.createDeployment(Object.assign(Object.assign({}, github_1.context.repo), { ref: deploymentRef, task: taskName }));
+    if (![201, 202].includes(response.status)) {
+        core_1.default.setFailed(`Failed to create deployment, recieved ${response.status} response status`);
+        process.exit(1);
+    }
+    // Typescript can't infer from the above that response.data.id will be a number now so we have to type cast
+    return response.data.id;
+});
+const setDeploymentStatus = (id, state, url) => __awaiter(void 0, void 0, void 0, function* () {
+    yield octokit.repos.createDeploymentStatus(Object.assign(Object.assign({}, github_1.context.repo), { deployment_id: id, state, log_url: url, mediaType: {
+            // 'flash' is needed to use the 'in_progress' state
+            // 'ant-man' is needed to use the log_url property
+            //  see https://octokit.github.io/rest.js/v18#repos-create-deployment-status
+            previews: ['flash', 'ant-man'],
+        } }));
+});
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    return Promise.all(allFiles.map(file => {
-        const body = fs_1.default.readFileSync(file);
-        const key = keyPrefix + path_1.default.relative(sourcePath, file);
-        return upload({
-            Key: key,
-            Bucket: bucketName,
-            Body: body,
-            ACL: 'public-read',
-            ContentType: mime_types_1.lookup(file) || 'text/plain',
-        });
-    }));
+    const deploymentId = yield createDeployment();
+    yield setDeploymentStatus(deploymentId, 'in_progress');
+    try {
+        yield Promise.all(allFiles.map(file => {
+            const body = fs_1.default.readFileSync(file);
+            const key = keyPrefix + path_1.default.relative(sourcePath, file);
+            return upload({
+                Key: key,
+                Bucket: bucketName,
+                Body: body,
+                ACL: 'public-read',
+                ContentType: mime_types_1.lookup(file) || 'text/plain',
+            });
+        }));
+        yield setDeploymentStatus(deploymentId, 'success', `https://${bucketName}/${keyPrefix}/`);
+    }
+    catch (err) {
+        yield setDeploymentStatus(deploymentId, 'failure');
+        throw err;
+    }
 });
 run().catch(err => {
     core_1.default.error(err);
