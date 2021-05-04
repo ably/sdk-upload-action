@@ -88,7 +88,7 @@ const createDeployment = async () => {
         task: taskName,
     });
     if (![201, 202].includes(response.status)) {
-        core.setFailed(`Failed to create deployment, recieved ${response.status} response status`);
+        core.setFailed(`Failed to create deployment, received ${response.status} response status`);
         process.exit(1);
     }
 
