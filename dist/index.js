@@ -115,7 +115,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     }));
 });
 run().catch(err => {
-    core_1.default.error(err);
     core_1.default.setFailed(err.message);
 });
 
