@@ -129,7 +129,7 @@ const upload = (params) => __awaiter(void 0, void 0, void 0, function* () {
 const createDeployment = () => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield octokit.repos.createDeployment(Object.assign(Object.assign({}, github_1.context.repo), { ref: deploymentRef, task: taskName }));
     if (![201, 202].includes(response.status)) {
-        core_1.default.setFailed(`Failed to create deployment, recieved ${response.status} response status`);
+        core_1.default.setFailed(`Failed to create deployment, received ${response.status} response status`);
         process.exit(1);
     }
     // Typescript can't infer from the above that response.data.id will be a number now so we have to type cast
@@ -166,7 +166,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 run().catch(err => {
-    core_1.default.error(err);
     core_1.default.setFailed(err.message);
 });
 

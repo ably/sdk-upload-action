@@ -134,6 +134,5 @@ const run = async () => {
 }
 
 run().catch(err => {
-    core.error(err);
     core.setFailed(err.message);
 });
