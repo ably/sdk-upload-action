@@ -70,12 +70,11 @@ const run = async () => {
             Bucket: bucketName,
             Body: body,
             ACL: 'public-read',
-            ContentType: lookup(file) || 'text/plain',
+            ContentType: lookup(file) || 'application/octet-stream',
         });
     }));
 }
 
 run().catch(err => {
-    core.error(err);
     core.setFailed(err.message);
 });
