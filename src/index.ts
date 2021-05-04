@@ -52,20 +52,6 @@ const s3ClientConfig = {
 
 const s3Client = new S3Client(s3ClientConfig);
 
-const listFiles = (dir: string) => {
-    let files: string[] = [];
-    const filesInDir = fs.readdirSync(dir);
-    filesInDir.forEach(file => {
-        const name = `${dir}/${file}`;
-        if (fs.statSync(name).isDirectory()) {
-            files.push(...listFiles(name));
-        } else {
-            files.push(name);
-        }
-    });
-
-    return files;
-}
 const upload = async (params: PutObjectCommandInput) => {
     const command = new PutObjectCommand(params);
     await s3Client.send(command);
