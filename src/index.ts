@@ -83,7 +83,7 @@ const run = async () => {
             Bucket: bucketName,
             Body: body,
             ACL: 'public-read',
-            ContentType: lookup(file) || 'text/plain',
+            ContentType: lookup(file) || 'application/octet-stream',
         });
     }));
 }
