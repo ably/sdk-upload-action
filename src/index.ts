@@ -4,6 +4,7 @@ import { S3Client, PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/clie
 import path from "path";
 import fs from "fs";
 import { lookup } from 'mime-types';
+import glob from '@actions/glob';
 
 const githubEventPath = process.env.GITHUB_EVENT_PATH;
 const githubRef = process.env.GITHUB_REF;
@@ -58,23 +59,6 @@ const s3ClientConfig = {
 
 const s3Client = new S3Client(s3ClientConfig);
 
-const listFiles = (dir: string) => {
-    let files: string[] = [];
-    const filesInDir = fs.readdirSync(dir);
-    filesInDir.forEach(file => {
-        const name = `${dir}/${file}`;
-        if (fs.statSync(name).isDirectory()) {
-            files.push(...listFiles(name));
-        } else {
-            files.push(name);
-        }
-    });
-
-    return files;
-}
-
-const allFiles = listFiles(sourcePath);
-
 const upload = async (params: PutObjectCommandInput) => {
     const command = new PutObjectCommand(params);
     await s3Client.send(command);
@@ -112,8 +96,12 @@ const setDeploymentStatus = async (id: number, state: 'in_progress' | 'success' 
 }
 
 const run = async () => {
+    const globber = await glob.create(`${sourcePath}/**`);
+    const allFiles = await globber.glob();
+
     const deploymentId = await createDeployment();
     await setDeploymentStatus(deploymentId, 'in_progress');
+
     try {
         await Promise.all(allFiles.map(file => {
             const body = fs.readFileSync(file);
@@ -123,7 +111,7 @@ const run = async () => {
                 Bucket: bucketName,
                 Body: body,
                 ACL: 'public-read',
-                ContentType: lookup(file) || 'text/plain',
+                ContentType: lookup(file) || 'application/octet-stream',
             });
         }));
         await setDeploymentStatus(deploymentId, 'success', `https://${bucketName}/${keyPrefix}/`);
