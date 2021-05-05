@@ -4,6 +4,7 @@ import { S3Client, PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/clie
 import path from "path";
 import fs from "fs";
 import { lookup } from 'mime-types';
+import glob from '@actions/glob';
 
 const githubEventPath = process.env.GITHUB_EVENT_PATH;
 const githubRef = process.env.GITHUB_REF;
@@ -51,23 +52,6 @@ const s3ClientConfig = {
 
 const s3Client = new S3Client(s3ClientConfig);
 
-const listFiles = (dir: string) => {
-    let files: string[] = [];
-    const filesInDir = fs.readdirSync(dir);
-    filesInDir.forEach(file => {
-        const name = `${dir}/${file}`;
-        if (fs.statSync(name).isDirectory()) {
-            files.push(...listFiles(name));
-        } else {
-            files.push(name);
-        }
-    });
-
-    return files;
-}
-
-const allFiles = listFiles(sourcePath);
-
 const upload = async (params: PutObjectCommandInput) => {
     const command = new PutObjectCommand(params);
     await s3Client.send(command);
@@ -75,6 +59,9 @@ const upload = async (params: PutObjectCommandInput) => {
 }
 
 const run = async () => {
+    const globber = await glob.create(`${sourcePath}/**`);
+    const allFiles = await globber.glob();
+
     return Promise.all(allFiles.map(file => {
         const body = fs.readFileSync(file);
         const key = keyPrefix + path.relative(sourcePath, file);
