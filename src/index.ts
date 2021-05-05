@@ -29,7 +29,7 @@ const branchName = githubRef.split('/').slice(2).join('/');
 const bucketName = 'sdk.ably.com';
 const sourcePath = path.resolve(core.getInput('sourcePath'));
 const destinationPath = path.resolve(core.getInput('destinationPath') ?? '');
-const taskName = core.getInput('taskName');
+const taskName = core.getInput('artifactName');
 
 let deploymentRef: string;
 let keyPrefix = `builds/${context.repo.owner}/${context.repo.repo}/`;
