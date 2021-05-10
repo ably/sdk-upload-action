@@ -56,7 +56,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core_1 = __importDefault(__nccwpck_require__(2186));
+const core = __importStar(__nccwpck_require__(2186));
 const github_1 = __importStar(__nccwpck_require__(5438));
 const client_s3_1 = __nccwpck_require__(9690);
 const path_1 = __importDefault(__nccwpck_require__(5622));
@@ -66,22 +66,22 @@ const glob_1 = __importDefault(__nccwpck_require__(8090));
 const githubEventPath = process.env.GITHUB_EVENT_PATH;
 const githubRef = process.env.GITHUB_REF;
 if (typeof githubEventPath !== 'string') {
-    core_1.default.setFailed('GITHUB_EVENT_PATH environment variable not set');
+    core.setFailed('GITHUB_EVENT_PATH environment variable not set');
     process.exit(1);
 }
 if (typeof githubRef !== 'string') {
-    core_1.default.setFailed('GITHUB_REF environment variable not set');
+    core.setFailed('GITHUB_REF environment variable not set');
     process.exit(1);
 }
-const githubToken = core_1.default.getInput('githubToken');
+const githubToken = core.getInput('githubToken');
 const octokit = github_1.default.getOctokit(githubToken);
 const evt = JSON.parse(fs_1.default.readFileSync(githubEventPath, 'utf8'));
 // githubRef is in the form 'refs/heads/branch_name' so we have to slice away the 'refs/heads/' bit
 const branchName = githubRef.split('/').slice(2).join('/');
 const bucketName = 'sdk.ably.com';
-const sourcePath = path_1.default.resolve(core_1.default.getInput('sourcePath'));
-const destinationPath = path_1.default.resolve((_a = core_1.default.getInput('destinationPath')) !== null && _a !== void 0 ? _a : '');
-const taskName = core_1.default.getInput('artifactName');
+const sourcePath = path_1.default.resolve(core.getInput('sourcePath'));
+const destinationPath = path_1.default.resolve((_a = core.getInput('destinationPath')) !== null && _a !== void 0 ? _a : '');
+const taskName = core.getInput('artifactName');
 let deploymentRef;
 let keyPrefix = `builds/${github_1.context.repo.owner}/${github_1.context.repo.repo}/`;
 if (github_1.context.eventName === 'pull_request') {
@@ -93,7 +93,7 @@ else if (github_1.context.eventName === 'push' && branchName === 'main') {
     keyPrefix += 'main/';
 }
 else {
-    core_1.default.setFailed("Error: this action can only be ran on a pull_request or a push to the 'main' branch");
+    core.setFailed("Error: this action can only be ran on a pull_request or a push to the 'main' branch");
     process.exit(1);
 }
 keyPrefix += destinationPath;
@@ -102,20 +102,20 @@ const s3ClientConfig = {
     region: 'eu-west-2',
     // AwsAuthInputConfig
     credentials: {
-        accessKeyId: core_1.default.getInput('s3AccessKeyId'),
-        secretAccessKey: core_1.default.getInput('s3AccessKey')
+        accessKeyId: core.getInput('s3AccessKeyId'),
+        secretAccessKey: core.getInput('s3AccessKey')
     },
 };
 const s3Client = new client_s3_1.S3Client(s3ClientConfig);
 const upload = (params) => __awaiter(void 0, void 0, void 0, function* () {
     const command = new client_s3_1.PutObjectCommand(params);
     yield s3Client.send(command);
-    core_1.default.info(`uploaded: ${params.Key}`);
+    core.info(`uploaded: ${params.Key}`);
 });
 const createDeployment = () => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield octokit.repos.createDeployment(Object.assign(Object.assign({}, github_1.context.repo), { ref: deploymentRef, task: taskName }));
     if (![201, 202].includes(response.status)) {
-        core_1.default.setFailed(`Failed to create deployment, received ${response.status} response status`);
+        core.setFailed(`Failed to create deployment, received ${response.status} response status`);
         process.exit(1);
     }
     // Typescript can't infer from the above that response.data.id will be a number now so we have to type cast
@@ -154,7 +154,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 run().catch(err => {
-    core_1.default.setFailed(err.message);
+    core.setFailed(err.message);
 });
 
 
