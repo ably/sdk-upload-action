@@ -57,12 +57,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
-const github_1 = __importStar(__nccwpck_require__(5438));
+const github_1 = __nccwpck_require__(5438);
 const client_s3_1 = __nccwpck_require__(9690);
 const path_1 = __importDefault(__nccwpck_require__(5622));
 const fs_1 = __importDefault(__nccwpck_require__(5747));
 const mime_types_1 = __nccwpck_require__(3583);
-const glob_1 = __importDefault(__nccwpck_require__(8090));
+const glob = __importStar(__nccwpck_require__(8090));
 const githubEventPath = process.env.GITHUB_EVENT_PATH;
 const githubRef = process.env.GITHUB_REF;
 if (typeof githubEventPath !== 'string') {
@@ -74,7 +74,7 @@ if (typeof githubRef !== 'string') {
     process.exit(1);
 }
 const githubToken = core.getInput('githubToken');
-const octokit = github_1.default.getOctokit(githubToken);
+const octokit = github_1.getOctokit(githubToken);
 const evt = JSON.parse(fs_1.default.readFileSync(githubEventPath, 'utf8'));
 // githubRef is in the form 'refs/heads/branch_name' so we have to slice away the 'refs/heads/' bit
 const branchName = githubRef.split('/').slice(2).join('/');
@@ -130,7 +130,7 @@ const setDeploymentStatus = (id, state, url) => __awaiter(void 0, void 0, void 0
         } }));
 });
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    const globber = yield glob_1.default.create(`${sourcePath}/**`);
+    const globber = yield glob.create(`${sourcePath}/**`);
     const allFiles = yield globber.glob();
     const deploymentId = yield createDeployment();
     yield setDeploymentStatus(deploymentId, 'in_progress');
