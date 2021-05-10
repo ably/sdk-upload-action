@@ -34,17 +34,21 @@ const taskName = core.getInput('artifactName');
 
 let deploymentRef: string;
 let keyPrefix = `builds/${context.repo.owner}/${context.repo.repo}/`;
+let environment = 'staging/';
 if (context.eventName === 'pull_request') {
     deploymentRef = evt.pull_request.head.sha;
-    keyPrefix += `pull/${evt.pull_request.number}/`;
+    keyPrefix += `pull/${evt.pull_request.number}`;
+    environment += `pull/${evt.pull_request.number}`;
 } else if (context.eventName === 'push' && branchName === 'main') {
     deploymentRef = context.sha;
-    keyPrefix += 'main/';
+    keyPrefix += 'main';
+    environment += 'main';
 } else {
     core.setFailed("Error: this action can only be ran on a pull_request or a push to the 'main' branch");
     process.exit(1);
 }
 keyPrefix += destinationPath;
+environment += ('/' + taskName);
 
 const s3ClientConfig = {
     // RegionInputConfig
@@ -71,6 +75,7 @@ const createDeployment = async () => {
         ref: deploymentRef,
         task: taskName,
         required_contexts: [],
+        environment,
     });
     if (![201, 202].includes(response.status)) {
         core.setFailed(`Failed to create deployment, received ${response.status} response status`);

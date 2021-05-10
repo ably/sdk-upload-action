@@ -84,19 +84,23 @@ const destinationPath = path_1.default.resolve((_a = core.getInput('destinationP
 const taskName = core.getInput('artifactName');
 let deploymentRef;
 let keyPrefix = `builds/${github_1.context.repo.owner}/${github_1.context.repo.repo}/`;
+let environment = 'staging/';
 if (github_1.context.eventName === 'pull_request') {
     deploymentRef = evt.pull_request.head.sha;
-    keyPrefix += `pull/${evt.pull_request.number}/`;
+    keyPrefix += `pull/${evt.pull_request.number}`;
+    environment += `pull/${evt.pull_request.number}`;
 }
 else if (github_1.context.eventName === 'push' && branchName === 'main') {
     deploymentRef = github_1.context.sha;
-    keyPrefix += 'main/';
+    keyPrefix += 'main';
+    environment += 'main';
 }
 else {
     core.setFailed("Error: this action can only be ran on a pull_request or a push to the 'main' branch");
     process.exit(1);
 }
 keyPrefix += destinationPath;
+environment += ('/' + taskName);
 const s3ClientConfig = {
     // RegionInputConfig
     region: 'eu-west-2',
@@ -113,7 +117,7 @@ const upload = (params) => __awaiter(void 0, void 0, void 0, function* () {
     core.info(`uploaded: ${params.Key}`);
 });
 const createDeployment = () => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield octokit.repos.createDeployment(Object.assign(Object.assign({}, github_1.context.repo), { ref: deploymentRef, task: taskName, required_contexts: [] }));
+    const response = yield octokit.repos.createDeployment(Object.assign(Object.assign({}, github_1.context.repo), { ref: deploymentRef, task: taskName, required_contexts: [], environment }));
     if (![201, 202].includes(response.status)) {
         core.setFailed(`Failed to create deployment, received ${response.status} response status`);
         process.exit(1);
