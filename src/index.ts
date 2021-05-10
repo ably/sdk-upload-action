@@ -1,10 +1,10 @@
 import * as core from '@actions/core';
-import github, { context } from '@actions/github';
+import { context, getOctokit } from '@actions/github';
 import { S3Client, PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
 import path from "path";
 import fs from "fs";
 import { lookup } from 'mime-types';
-import glob from '@actions/glob';
+import * as glob from '@actions/glob';
 
 const githubEventPath = process.env.GITHUB_EVENT_PATH;
 const githubRef = process.env.GITHUB_REF;
@@ -20,7 +20,7 @@ if (typeof githubRef !== 'string') {
 }
 
 const githubToken = core.getInput('githubToken');
-const octokit = github.getOctokit(githubToken);
+const octokit = getOctokit(githubToken);
 
 const evt = JSON.parse(fs.readFileSync(githubEventPath, 'utf8'));
 
