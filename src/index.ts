@@ -70,6 +70,7 @@ const createDeployment = async () => {
         ...context.repo,
         ref: deploymentRef,
         task: taskName,
+        required_contexts: [],
     });
     if (![201, 202].includes(response.status)) {
         core.setFailed(`Failed to create deployment, received ${response.status} response status`);
