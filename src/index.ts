@@ -50,6 +50,9 @@ if (context.eventName === 'pull_request') {
 keyPrefix += destinationPath;
 environment += ('/' + taskName);
 
+core.debug(`keyPrefix: ${keyPrefix}`);
+core.debug(`environment: ${environment}`);
+
 const s3ClientConfig = {
     // RegionInputConfig
     region: 'eu-west-2',
@@ -111,7 +114,10 @@ const run = async () => {
     try {
         await Promise.all(allFiles.filter(file => !fs.statSync(file).isDirectory()).map(file => {
             const body = fs.readFileSync(file);
+            core.debug(`sourcePath: ${sourcePath}`);
+            core.debug(`file: ${file}`);
             const key = keyPrefix + path.relative(sourcePath, file);
+            core.debug(`resulting key: ${key}`);
             return upload({
                 Key: key,
                 Bucket: bucketName,

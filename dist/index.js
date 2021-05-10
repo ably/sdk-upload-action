@@ -101,6 +101,8 @@ else {
 }
 keyPrefix += destinationPath;
 environment += ('/' + taskName);
+core.debug(`keyPrefix: ${keyPrefix}`);
+core.debug(`environment: ${environment}`);
 const s3ClientConfig = {
     // RegionInputConfig
     region: 'eu-west-2',
@@ -141,7 +143,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield Promise.all(allFiles.filter(file => !fs_1.default.statSync(file).isDirectory()).map(file => {
             const body = fs_1.default.readFileSync(file);
+            core.debug(`sourcePath: ${sourcePath}`);
+            core.debug(`file: ${file}`);
             const key = keyPrefix + path_1.default.relative(sourcePath, file);
+            core.debug(`resulting key: ${key}`);
             return upload({
                 Key: key,
                 Bucket: bucketName,
