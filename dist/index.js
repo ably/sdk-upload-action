@@ -135,7 +135,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     const deploymentId = yield createDeployment();
     yield setDeploymentStatus(deploymentId, 'in_progress');
     try {
-        yield Promise.all(allFiles.map(file => {
+        yield Promise.all(allFiles.filter(file => !fs_1.default.statSync(file).isDirectory()).map(file => {
             const body = fs_1.default.readFileSync(file);
             const key = keyPrefix + path_1.default.relative(sourcePath, file);
             return upload({
