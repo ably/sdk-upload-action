@@ -104,7 +104,7 @@ const run = async () => {
     await setDeploymentStatus(deploymentId, 'in_progress');
 
     try {
-        await Promise.all(allFiles.map(file => {
+        await Promise.all(allFiles.filter(file => !fs.statSync(file).isDirectory()).map(file => {
             const body = fs.readFileSync(file);
             const key = keyPrefix + path.relative(sourcePath, file);
             return upload({
