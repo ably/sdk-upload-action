@@ -145,7 +145,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const body = fs_1.default.readFileSync(file);
             core.debug(`sourcePath: ${sourcePath}`);
             core.debug(`file: ${file}`);
-            const key = keyPrefix + path_1.default.relative(sourcePath, file);
+            const key = path_1.default.join(keyPrefix, path_1.default.relative(sourcePath, file));
             core.debug(`resulting key: ${key}`);
             return upload({
                 Key: key,

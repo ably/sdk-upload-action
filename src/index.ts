@@ -116,7 +116,7 @@ const run = async () => {
             const body = fs.readFileSync(file);
             core.debug(`sourcePath: ${sourcePath}`);
             core.debug(`file: ${file}`);
-            const key = keyPrefix + path.relative(sourcePath, file);
+            const key = path.join(keyPrefix, path.relative(sourcePath, file));
             core.debug(`resulting key: ${key}`);
             return upload({
                 Key: key,
