@@ -80,7 +80,7 @@ const evt = JSON.parse(fs_1.default.readFileSync(githubEventPath, 'utf8'));
 const branchName = githubRef.split('/').slice(2).join('/');
 const bucketName = 'sdk.ably.com';
 const sourcePath = path_1.default.resolve(core.getInput('sourcePath'));
-const destinationPath = path_1.default.resolve((_a = core.getInput('destinationPath')) !== null && _a !== void 0 ? _a : '');
+const destinationPath = (_a = core.getInput('destinationPath')) !== null && _a !== void 0 ? _a : '';
 const taskName = core.getInput('artifactName');
 let deploymentRef;
 let keyPrefix = `builds/${github_1.context.repo.owner}/${github_1.context.repo.repo}/`;
