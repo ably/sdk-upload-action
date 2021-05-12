@@ -128,7 +128,7 @@ const createDeployment = () => __awaiter(void 0, void 0, void 0, function* () {
     return response.data.id;
 });
 const setDeploymentStatus = (id, state, url) => __awaiter(void 0, void 0, void 0, function* () {
-    yield octokit.repos.createDeploymentStatus(Object.assign(Object.assign({}, github_1.context.repo), { deployment_id: id, state, log_url: url, mediaType: {
+    yield octokit.repos.createDeploymentStatus(Object.assign(Object.assign({}, github_1.context.repo), { deployment_id: id, state, log_url: url, target_url: url, environment_url: url, mediaType: {
             // 'flash' is needed to use the 'in_progress' state
             // 'ant-man' is needed to use the log_url property
             //  see https://octokit.github.io/rest.js/v18#repos-create-deployment-status
