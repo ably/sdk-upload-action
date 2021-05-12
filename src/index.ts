@@ -95,6 +95,8 @@ const setDeploymentStatus = async (id: number, state: 'in_progress' | 'success' 
         deployment_id: id,
         state,
         log_url: url,
+        target_url: url,
+        environment_url: url,
         mediaType: {
             // 'flash' is needed to use the 'in_progress' state
             // 'ant-man' is needed to use the log_url property
