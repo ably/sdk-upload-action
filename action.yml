@@ -15,14 +15,11 @@ inputs:
     description: AWS IAM user's secret access key.
     required: true
   sourcePath:
-    description: What to upload, relative to repository root.
+    description: Path to a directory containing the files to upload, relative to the root directory of the repository.
     required: true
   githubToken:
-    description: This should be a token with access to the repository scoped in as a secret.
+    description: This should be a token with access to the repository scoped in as a secret. This will be available in the GitHub runner environment by default as `secrets.GITHUB_TOKEN`.
     required: true
   artifactName:
-    description: The name of the artifact to be uploaded, for example `docs`
+    description: The name of the artifact to be uploaded, for example `docs`. This will be used as the directory name within S3 for uploaded artifacts.
     required: true
-  destinationPath:
-    description: Where to upload, relative to resolved object prefix.
-    required: false
