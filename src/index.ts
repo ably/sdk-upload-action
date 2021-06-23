@@ -46,7 +46,7 @@ if (context.eventName === 'pull_request') {
     core.setFailed("Error: this action can only be ran on a pull_request or a push to the 'main' branch");
     process.exit(1);
 }
-keyPrefix += artifactName;
+keyPrefix += ('/' + artifactName);
 environment += ('/' + artifactName);
 
 core.debug(`keyPrefix: ${keyPrefix}`);
