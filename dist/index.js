@@ -81,7 +81,7 @@ const branchName = githubRef.split('/').slice(2).join('/');
 const bucketName = 'sdk.ably.com';
 const sourcePath = path_1.default.resolve(core.getInput('sourcePath'));
 const destinationPath = (_a = core.getInput('destinationPath')) !== null && _a !== void 0 ? _a : '';
-const taskName = core.getInput('artifactName');
+const artifactName = core.getInput('artifactName');
 let deploymentRef;
 let keyPrefix = `builds/${github_1.context.repo.owner}/${github_1.context.repo.repo}/`;
 let environment = 'staging/';
@@ -99,8 +99,8 @@ else {
     core.setFailed("Error: this action can only be ran on a pull_request or a push to the 'main' branch");
     process.exit(1);
 }
-keyPrefix += destinationPath;
-environment += ('/' + taskName);
+keyPrefix += artifactName + '/' + destinationPath;
+environment += ('/' + artifactName);
 core.debug(`keyPrefix: ${keyPrefix}`);
 core.debug(`environment: ${environment}`);
 const s3ClientConfig = {
@@ -119,7 +119,7 @@ const upload = (params) => __awaiter(void 0, void 0, void 0, function* () {
     core.info(`uploaded: ${params.Key}`);
 });
 const createDeployment = () => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield octokit.repos.createDeployment(Object.assign(Object.assign({}, github_1.context.repo), { ref: deploymentRef, task: taskName, required_contexts: [], environment }));
+    const response = yield octokit.repos.createDeployment(Object.assign(Object.assign({}, github_1.context.repo), { ref: deploymentRef, task: artifactName, required_contexts: [], environment }));
     if (![201, 202].includes(response.status)) {
         core.setFailed(`Failed to create deployment, received ${response.status} response status`);
         process.exit(1);
