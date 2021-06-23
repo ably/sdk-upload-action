@@ -30,7 +30,7 @@ const branchName = githubRef.split('/').slice(2).join('/');
 const bucketName = 'sdk.ably.com';
 const sourcePath = path.resolve(core.getInput('sourcePath'));
 const destinationPath = core.getInput('destinationPath') ?? '';
-const taskName = core.getInput('artifactName');
+const artifactName = core.getInput('artifactName');
 
 let deploymentRef: string;
 let keyPrefix = `builds/${context.repo.owner}/${context.repo.repo}/`;
@@ -48,7 +48,7 @@ if (context.eventName === 'pull_request') {
     process.exit(1);
 }
 keyPrefix += destinationPath;
-environment += ('/' + taskName);
+environment += ('/' + artifactName);
 
 core.debug(`keyPrefix: ${keyPrefix}`);
 core.debug(`environment: ${environment}`);
@@ -76,7 +76,7 @@ const createDeployment = async () => {
     const response = await octokit.repos.createDeployment({
         ...context.repo,
         ref: deploymentRef,
-        task: taskName,
+        task: artifactName,
         required_contexts: [],
         environment,
     });
