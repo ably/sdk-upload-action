@@ -54,7 +54,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github_1 = __nccwpck_require__(5438);
@@ -80,7 +79,6 @@ const evt = JSON.parse(fs_1.default.readFileSync(githubEventPath, 'utf8'));
 const branchName = githubRef.split('/').slice(2).join('/');
 const bucketName = 'sdk.ably.com';
 const sourcePath = path_1.default.resolve(core.getInput('sourcePath'));
-const destinationPath = (_a = core.getInput('destinationPath')) !== null && _a !== void 0 ? _a : '';
 const artifactName = core.getInput('artifactName');
 let deploymentRef;
 let keyPrefix = `builds/${github_1.context.repo.owner}/${github_1.context.repo.repo}/`;
@@ -99,7 +97,7 @@ else {
     core.setFailed("Error: this action can only be ran on a pull_request or a push to the 'main' branch");
     process.exit(1);
 }
-keyPrefix += artifactName + '/' + destinationPath;
+keyPrefix += artifactName;
 environment += ('/' + artifactName);
 core.debug(`keyPrefix: ${keyPrefix}`);
 core.debug(`environment: ${environment}`);
