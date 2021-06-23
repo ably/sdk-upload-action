@@ -29,7 +29,6 @@ const branchName = githubRef.split('/').slice(2).join('/');
 
 const bucketName = 'sdk.ably.com';
 const sourcePath = path.resolve(core.getInput('sourcePath'));
-const destinationPath = core.getInput('destinationPath') ?? '';
 const artifactName = core.getInput('artifactName');
 
 let deploymentRef: string;
@@ -47,7 +46,7 @@ if (context.eventName === 'pull_request') {
     core.setFailed("Error: this action can only be ran on a pull_request or a push to the 'main' branch");
     process.exit(1);
 }
-keyPrefix += artifactName + '/' + destinationPath;
+keyPrefix += artifactName;
 environment += ('/' + artifactName);
 
 core.debug(`keyPrefix: ${keyPrefix}`);

@@ -23,6 +23,3 @@ inputs:
   artifactName:
     description: The name of the artifact to be uploaded, for example `docs`. This will be used as the directory name within S3 for uploaded artifacts.
     required: true
-  destinationPath:
-    description: An optional sub-path in S3 for uploaded artifacts.
-    required: false
