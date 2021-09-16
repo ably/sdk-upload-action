@@ -136,6 +136,9 @@ const setDeploymentStatus = (id, state, url) => __awaiter(void 0, void 0, void 0
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
     const globber = yield glob.create(`${sourcePath}/**`);
     const allFiles = yield globber.glob();
+    if (allFiles.length === 0) {
+        throw new Error(`No files found in sourcePath: ${sourcePath}`);
+    }
     const deploymentId = yield createDeployment();
     yield setDeploymentStatus(deploymentId, 'in_progress');
     try {
