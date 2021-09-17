@@ -78,6 +78,7 @@ const createDeployment = async () => {
         task: artifactName,
         required_contexts: [],
         environment,
+        auto_merge: false,
     });
     if (![201, 202].includes(response.status)) {
         core.setFailed(`Failed to create deployment, received ${response.status} response status`);
