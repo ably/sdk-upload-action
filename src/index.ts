@@ -110,6 +110,10 @@ const run = async () => {
     const globber = await glob.create(`${sourcePath}/**`);
     const allFiles = await globber.glob();
 
+    if (allFiles.length === 0) {
+        throw new Error(`No files found in sourcePath: ${sourcePath}`);
+    }
+
     const deploymentId = await createDeployment();
     await setDeploymentStatus(deploymentId, 'in_progress');
 
