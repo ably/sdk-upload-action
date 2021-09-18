@@ -28,7 +28,6 @@ This means that workflows using this action in a repository that is owned by an 
 
 ```yml
 permissions:
-  contents: read
   deployments: write
 ```
 
