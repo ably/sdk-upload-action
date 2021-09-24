@@ -21,6 +21,20 @@ In the above example, `githubToken` uses the `GITHUB_TOKEN` secret which is auto
 
 Artifacts generated from pull requests will be uploaded to `https://sdk.ably.io/builds/ably/${repository_name}/pull/${pull_number}/${artifactName}` and artifacts generated from pushes to the main branch will be uploaded to `https://sdk.ably.io/builds/ably/${repository_name}/main/${artifactName}`.
 
+## Permissions
+
+The `githubToken` requires `write` access to the `deployments` permissions scope.
+This means that workflows using this action in a repository that is owned by an org with the default access level for actions set to 'restricted' will need to explicitly specify this requirement in the workflow using [permissions](https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#permissions), something like this:
+
+```yml
+permissions:
+  deployments: write
+```
+
+See also:
+
+- GitHub docs: [Authentication in a workflow: Permissions for the `GITHUB_TOKEN`](https://docs.github.com/en/actions/reference/authentication-in-a-workflow#permissions-for-the-github_token)
+- GitHub's Youtube channel: [GitHub Actions: Limit workflow runs & Control permissions for GITHUB_TOKEN](https://youtu.be/JMHs5lYpvAM?t=483)
 
 ## Contributing
 
