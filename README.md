@@ -31,6 +31,12 @@ permissions:
   deployments: write
 ```
 
+When permissions haven't been correctly configured for a job using this action as a step, the error message displayed by GitHub's workflow runner has been observed to present in the log output like this:
+
+```
+Error: Resource not accessible by integration
+```
+
 See also:
 
 - GitHub docs: [Authentication in a workflow: Permissions for the `GITHUB_TOKEN`](https://docs.github.com/en/actions/reference/authentication-in-a-workflow#permissions-for-the-github_token)
