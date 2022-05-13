@@ -104,12 +104,14 @@ core.debug(`environment: ${environment}`);
 const s3ClientConfig = {
     // RegionInputConfig
     region: 'eu-west-2',
-    // AwsAuthInputConfig
-    credentials: {
+};
+if (core.getInput('s3AccessKeyId') && core.getInput('s3AccessKey')) {
+    core.warning('Setting s3AccessKeyId and s3AccessKey is deprecated, please switch to using the aws-actions/configure-aws-credentials action with GitHub OIDC.');
+    s3ClientConfig.credentials = {
         accessKeyId: core.getInput('s3AccessKeyId'),
         secretAccessKey: core.getInput('s3AccessKey')
-    },
-};
+    };
+}
 const s3Client = new client_s3_1.S3Client(s3ClientConfig);
 const upload = (params) => __awaiter(void 0, void 0, void 0, function* () {
     const command = new client_s3_1.PutObjectCommand(params);

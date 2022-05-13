@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import { context, getOctokit } from '@actions/github';
-import { S3Client, PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
+import { S3Client, S3ClientConfig, PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
 import path from "path";
 import fs from "fs";
 import { lookup } from 'mime-types';
@@ -52,16 +52,18 @@ environment += ('/' + artifactName);
 core.debug(`keyPrefix: ${keyPrefix}`);
 core.debug(`environment: ${environment}`);
 
-const s3ClientConfig = {
+const s3ClientConfig: S3ClientConfig = {
     // RegionInputConfig
     region: 'eu-west-2',
+};
 
-    // AwsAuthInputConfig
-    credentials: {
+if(core.getInput('s3AccessKeyId') && core.getInput('s3AccessKey')) {
+    core.warning('Setting s3AccessKeyId and s3AccessKey is deprecated, please switch to using the aws-actions/configure-aws-credentials action with GitHub OIDC.');
+    s3ClientConfig.credentials = {
         accessKeyId: core.getInput('s3AccessKeyId'),
         secretAccessKey: core.getInput('s3AccessKey')
-    },
-};
+    };
+}
 
 const s3Client = new S3Client(s3ClientConfig);
 
