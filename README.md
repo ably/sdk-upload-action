@@ -14,7 +14,7 @@ steps:
   - uses: aws-actions/configure-aws-credentials@v1
     with:
       aws-region: eu-west-2
-      role-to-assume: arn:aws:iam::884096606738:role/ably-sdk-builds-<REPO-NAME>
+      role-to-assume: arn:aws:iam::${{ secrets.ABLY_AWS_ACCOUNT_ID_SDK }}:role/ably-sdk-builds-<REPO-NAME>
       role-session-name: "${{ github.run_id }}-${{ github.run_number }}"
   - uses: ably/sdk-upload-action@v1
     with:
@@ -37,7 +37,7 @@ This action expects the calling repository to be configured to use [GitHub OIDC]
 - uses: aws-actions/configure-aws-credentials@v1
   with:
     aws-region: eu-west-2
-    role-to-assume: arn:aws:iam::884096606738:role/ably-sdk-builds-ably-js
+    role-to-assume: arn:aws:iam::${{ secrets.ABLY_AWS_ACCOUNT_ID_SDK }}:role/ably-sdk-builds-ably-js
     role-session-name: "${{ github.run_id }}-${{ github.run_number }}"
 ```
 
