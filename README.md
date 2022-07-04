@@ -25,7 +25,9 @@ steps:
 
 In the above example, `<REPO-NAME>` should be the Ably repository name (e.g. `ably-js`), and `githubToken` uses the `GITHUB_TOKEN` secret which is automatically supplied to GitHub runners so you don't need to do anything to access it.
 
-Artifacts generated from pull requests will be uploaded to `https://sdk.ably.com/builds/ably/${repository_name}/pull/${pull_number}/${artifactName}` and artifacts generated from pushes to the main branch will be uploaded to `https://sdk.ably.com/builds/ably/${repository_name}/main/${artifactName}`.
+- Artifacts generated from pull requests will be uploaded to `https://sdk.ably.com/builds/ably/${repository_name}/pull/${pull_number}/${artifactName}`.
+- Artifacts generated from pushes to the main branch will be uploaded to `https://sdk.ably.com/builds/ably/${repository_name}/main/${artifactName}`.
+- Artifacts generated from a pushed tag will be uploaded to `https://sdk.ably.com/builds/ably/${repository_name}/tag/${tag_name}/${artifactName}`.
 
 ## Permissions
 

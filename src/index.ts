@@ -24,8 +24,34 @@ const octokit = getOctokit(githubToken);
 
 const evt = JSON.parse(fs.readFileSync(githubEventPath, 'utf8'));
 
-// githubRef is in the form 'refs/heads/branch_name' so we have to slice away the 'refs/heads/' bit
-const branchName = githubRef.split('/').slice(2).join('/');
+const createRef = (githubRef: string) => {
+  // githubRef is in the form 'refs/heads/branch_name' or 'refs/tags/tag_name'
+  const components = githubRef.split('/')
+
+  const refTypePlural = components[1]
+  let refType: 'head' | 'tag'
+
+  switch (refTypePlural) {
+    case 'heads': {
+      refType = 'head'
+      break
+    }
+    case 'tags': {
+      refType = 'tag'
+      break
+    }
+    default: {
+      return null
+    }
+  }
+
+  return {
+    type: refType,
+    name: components.slice(2).join('/')
+  }
+}
+
+const ref = createRef(githubRef)
 
 const bucketName = 'sdk.ably.com';
 const sourcePath = path.resolve(core.getInput('sourcePath'));
@@ -38,12 +64,16 @@ if (context.eventName === 'pull_request') {
     deploymentRef = evt.pull_request.head.sha;
     keyPrefix += `pull/${evt.pull_request.number}`;
     environment += `pull/${evt.pull_request.number}`;
-} else if (context.eventName === 'push' && branchName === 'main') {
+} else if (context.eventName === 'push' && ref !== null && ref.type === 'head' && ref.name === 'main') {
     deploymentRef = context.sha;
     keyPrefix += 'main';
     environment += 'main';
+} else if (context.eventName === 'push' && ref !== null && ref.type === 'tag') {
+    deploymentRef = context.sha;
+    keyPrefix += `tag/${ref.name}`;
+    environment += `tag/${ref.name}`;
 } else {
-    core.setFailed("Error: this action can only be ran on a pull_request or a push to the 'main' branch");
+    core.setFailed("Error: this action can only be ran on a pull_request, a push to the 'main' branch, or a push of a tag");
     process.exit(1);
 }
 keyPrefix += ('/' + artifactName);
