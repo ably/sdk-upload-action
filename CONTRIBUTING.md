@@ -8,7 +8,7 @@
 4. Run `npm run package` to compile the JS from step 1 into a single file (output will be in the dist folder)
 5. Commit the changes to the dist folder from step 4
 6. Push a tag with the absolute new version number to GitHub, which must be in the form `v<major>.<minor>.<patch>` - e.g. `v1.3.0`
-7. Move the tag for the `major` version number to the same commit, which will be in the form `v<major` - e.g. `v1`
+7. Move the tag for the `major` version number to the same commit, which will be in the form `v<major>` - e.g. `v1`
 
 Commits made in steps 1 thru 5 should ideally be pushed to a release branch, seeking approval from others to land to `main` (default) branch prior to adding and moving tags.
 
