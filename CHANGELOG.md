@@ -1,7 +1,22 @@
 # Changelog
 
-## Version 2 (yet to be released)
+## [2.0.0](https://github.com/ably/sdk-upload-action/tree/v2.0.0)
+
+[Full Changelog](https://github.com/ably/sdk-upload-action/compare/v1.3.0...v2.0.0)
+
+This release includes the following breaking changes:
 
 - Removes support for S3 Access Key to be used to directly specify the IAM user.
   GitHub OIDC is now required.
-- Makes the `artifactName` Action input optional, allowing artifacts to be uploaded to the root of the deployment context.
+- Enforces that the `githubToken` and `sourcePath` inputs are supplied when the Action is run.
+
+And the following new feature:
+
+- The `artifactName` Action input is now optional, allowing artifacts to be uploaded to the root of the deployment context.
+
+**Merged pull requests:**
+
+- Enforce that required inputs are supplied [\#47](https://github.com/ably/sdk-upload-action/pull/47) ([QuintinWillison](https://github.com/QuintinWillison))
+- Make `artifactName` input optional [\#46](https://github.com/ably/sdk-upload-action/pull/46) ([QuintinWillison](https://github.com/QuintinWillison))
+- Remove deprecated S3 access method [\#44](https://github.com/ably/sdk-upload-action/pull/44) ([QuintinWillison](https://github.com/QuintinWillison))
+- Move+Sync Node.js versions to Active LTS and add check workflow [\#43](https://github.com/ably/sdk-upload-action/pull/43) ([QuintinWillison](https://github.com/QuintinWillison))
