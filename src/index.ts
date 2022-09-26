@@ -19,7 +19,7 @@ if (typeof githubRef !== 'string') {
     process.exit(1);
 }
 
-const githubToken = core.getInput('githubToken');
+const githubToken = core.getInput('githubToken', {required: true});
 const octokit = getOctokit(githubToken);
 
 const githubEvent = JSON.parse(fs.readFileSync(githubEventPath, 'utf8'));
@@ -54,7 +54,7 @@ const createRef = (githubRef: string) => {
 const ref = createRef(githubRef)
 
 const s3BucketName = 'sdk.ably.com';
-const sourcePath = path.resolve(core.getInput('sourcePath'));
+const sourcePath = path.resolve(core.getInput('sourcePath', {required: true}));
 
 // Optional artifactName:
 // - The getInput() method calls trim() for us by default (trimWhitespace: true)
