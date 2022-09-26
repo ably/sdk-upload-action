@@ -12,7 +12,7 @@
 8. Push a tag with the absolute new version number to GitHub, which must be in the form `v<major>.<minor>.<patch>` - e.g. `v1.3.0`
 9. Move the tag for the `major` version number to the same commit, which will be in the form `v<major>` - e.g. `v1`
 
-Commits made in steps 1 thru 5 should ideally be pushed to a release branch, seeking approval from others to land to `main` (default) branch prior to adding and moving tags.
+Commits made in steps 1 thru 7 should ideally be pushed to a release branch, seeking approval from others to land to `main` (default) branch prior to adding and moving tags.
 
 ## See Also
 
