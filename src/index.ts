@@ -59,28 +59,28 @@ const artifactName = core.getInput('artifactName');
 
 let deploymentRef: string;
 let s3KeyPrefix = `builds/${context.repo.owner}/${context.repo.repo}/`;
-let environment = 'staging/';
+let githubEnvironmentName = 'staging/';
 if (context.eventName === 'pull_request') {
     deploymentRef = evt.pull_request.head.sha;
     s3KeyPrefix += `pull/${evt.pull_request.number}`;
-    environment += `pull/${evt.pull_request.number}`;
+    githubEnvironmentName += `pull/${evt.pull_request.number}`;
 } else if (context.eventName === 'push' && ref !== null && ref.type === 'head' && ref.name === 'main') {
     deploymentRef = context.sha;
     s3KeyPrefix += 'main';
-    environment += 'main';
+    githubEnvironmentName += 'main';
 } else if (context.eventName === 'push' && ref !== null && ref.type === 'tag') {
     deploymentRef = context.sha;
     s3KeyPrefix += `tag/${ref.name}`;
-    environment += `tag/${ref.name}`;
+    githubEnvironmentName += `tag/${ref.name}`;
 } else {
     core.setFailed("Error: this action can only be ran on a pull_request, a push to the 'main' branch, or a push of a tag");
     process.exit(1);
 }
 s3KeyPrefix += ('/' + artifactName);
-environment += ('/' + artifactName);
+githubEnvironmentName += ('/' + artifactName);
 
-core.debug(`s3KeyPrefix: ${s3KeyPrefix}`);
-core.debug(`environment: ${environment}`);
+core.debug(`S3 Key Prefix: ${s3KeyPrefix}`);
+core.debug(`GitHub Environment Name: ${githubEnvironmentName}`);
 
 const s3ClientConfig: S3ClientConfig = {
     // RegionInputConfig
@@ -101,7 +101,7 @@ const createDeployment = async () => {
         ref: deploymentRef,
         task: artifactName,
         required_contexts: [],
-        environment,
+        githubEnvironmentName,
         auto_merge: false,
     });
     if (![201, 202].includes(response.status)) {
