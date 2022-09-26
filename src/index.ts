@@ -57,19 +57,19 @@ const s3BucketName = 'sdk.ably.com';
 const sourcePath = path.resolve(core.getInput('sourcePath'));
 const artifactName = core.getInput('artifactName');
 
-let deploymentRef: string;
+let githubDeploymentRef: string;
 let s3KeyPrefix = `builds/${context.repo.owner}/${context.repo.repo}/`;
 let githubEnvironmentName = 'staging/';
 if (context.eventName === 'pull_request') {
-    deploymentRef = evt.pull_request.head.sha;
+    githubDeploymentRef = evt.pull_request.head.sha;
     s3KeyPrefix += `pull/${evt.pull_request.number}`;
     githubEnvironmentName += `pull/${evt.pull_request.number}`;
 } else if (context.eventName === 'push' && ref !== null && ref.type === 'head' && ref.name === 'main') {
-    deploymentRef = context.sha;
+    githubDeploymentRef = context.sha;
     s3KeyPrefix += 'main';
     githubEnvironmentName += 'main';
 } else if (context.eventName === 'push' && ref !== null && ref.type === 'tag') {
-    deploymentRef = context.sha;
+    githubDeploymentRef = context.sha;
     s3KeyPrefix += `tag/${ref.name}`;
     githubEnvironmentName += `tag/${ref.name}`;
 } else {
@@ -98,7 +98,7 @@ const upload = async (params: PutObjectCommandInput) => {
 const createDeployment = async () => {
     const response = await octokit.repos.createDeployment({
         ...context.repo,
-        ref: deploymentRef,
+        ref: githubDeploymentRef,
         task: artifactName,
         required_contexts: [],
         githubEnvironmentName,
