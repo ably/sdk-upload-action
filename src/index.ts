@@ -55,7 +55,7 @@ const ref = createRef(githubRef)
 
 const s3BucketName = 'sdk.ably.com';
 const sourcePath = path.resolve(core.getInput('sourcePath'));
-const artifactName = core.getInput('artifactName');
+const artifactName = core.getInput('artifactName').trim(); // empty string indicates no value, i.e. artifact name not specified
 
 let githubDeploymentRef: string;
 let s3KeyPrefix = `builds/${context.repo.owner}/${context.repo.repo}/`;
@@ -76,8 +76,11 @@ if (context.eventName === 'pull_request') {
     core.setFailed("Error: this action can only be ran on a pull_request, a push to the 'main' branch, or a push of a tag");
     process.exit(1);
 }
-s3KeyPrefix += ('/' + artifactName);
-githubEnvironmentName += ('/' + artifactName);
+
+if (artifactName.length > 0) {
+  s3KeyPrefix += ('/' + artifactName);
+  githubEnvironmentName += ('/' + artifactName);
+}
 
 core.debug(`S3 Key Prefix: ${s3KeyPrefix}`);
 core.debug(`GitHub Environment Name: ${githubEnvironmentName}`);
