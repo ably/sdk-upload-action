@@ -15,5 +15,9 @@ inputs:
     description: This should be a token with access to the repository scoped in as a secret. This will be available in the GitHub runner environment by default as `secrets.GITHUB_TOKEN`.
     required: true
   artifactName:
-    description: The name of the artifact to be uploaded, for example `docs`. This will be used as the directory name within S3 for uploaded artifacts.
-    required: true
+    description: |
+      The name of the artifact to be uploaded, for example `docs`.
+      If supplied then it is used as the directory name within S3 for the uploaded artifacts, as well as within the GitHub deployment environment name.
+      If not supplied or supplied as an empty string then the artifacts are uploaded to S3 at root for this deployment context.
+    required: false
+    default: ''
