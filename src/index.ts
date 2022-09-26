@@ -55,7 +55,11 @@ const ref = createRef(githubRef)
 
 const s3BucketName = 'sdk.ably.com';
 const sourcePath = path.resolve(core.getInput('sourcePath'));
-const artifactName = core.getInput('artifactName').trim(); // empty string indicates no value, i.e. artifact name not specified
+
+// Optional artifactName:
+// - The getInput() method calls trim() for us by default (trimWhitespace: true)
+// - Empty string indicates no value, i.e. artifact name not specified
+const artifactName = core.getInput('artifactName');
 
 let githubDeploymentRef: string;
 let s3KeyPrefix = `builds/${context.repo.owner}/${context.repo.repo}/`;
