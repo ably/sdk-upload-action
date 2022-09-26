@@ -29,6 +29,8 @@ In the above example, `<REPO-NAME>` should be the Ably repository name (e.g. `ab
 - Artifacts generated from pushes to the main branch will be uploaded to `https://sdk.ably.com/builds/ably/${repository_name}/main/${artifactName}`.
 - Artifacts generated from a pushed tag will be uploaded to `https://sdk.ably.com/builds/ably/${repository_name}/tag/${tag_name}/${artifactName}`.
 
+If `artifactName` is not specified, or specified as an empty string, then artifacts are pushed to the root of the upload context (i.e. dropping `/${artifactName}` from the URL structures outlined above).
+
 ## Permissions
 
 ### AWS
