@@ -58,28 +58,28 @@ const sourcePath = path.resolve(core.getInput('sourcePath'));
 const artifactName = core.getInput('artifactName');
 
 let deploymentRef: string;
-let keyPrefix = `builds/${context.repo.owner}/${context.repo.repo}/`;
+let s3KeyPrefix = `builds/${context.repo.owner}/${context.repo.repo}/`;
 let environment = 'staging/';
 if (context.eventName === 'pull_request') {
     deploymentRef = evt.pull_request.head.sha;
-    keyPrefix += `pull/${evt.pull_request.number}`;
+    s3KeyPrefix += `pull/${evt.pull_request.number}`;
     environment += `pull/${evt.pull_request.number}`;
 } else if (context.eventName === 'push' && ref !== null && ref.type === 'head' && ref.name === 'main') {
     deploymentRef = context.sha;
-    keyPrefix += 'main';
+    s3KeyPrefix += 'main';
     environment += 'main';
 } else if (context.eventName === 'push' && ref !== null && ref.type === 'tag') {
     deploymentRef = context.sha;
-    keyPrefix += `tag/${ref.name}`;
+    s3KeyPrefix += `tag/${ref.name}`;
     environment += `tag/${ref.name}`;
 } else {
     core.setFailed("Error: this action can only be ran on a pull_request, a push to the 'main' branch, or a push of a tag");
     process.exit(1);
 }
-keyPrefix += ('/' + artifactName);
+s3KeyPrefix += ('/' + artifactName);
 environment += ('/' + artifactName);
 
-core.debug(`keyPrefix: ${keyPrefix}`);
+core.debug(`s3KeyPrefix: ${s3KeyPrefix}`);
 core.debug(`environment: ${environment}`);
 
 const s3ClientConfig: S3ClientConfig = {
@@ -146,7 +146,7 @@ const run = async () => {
             const body = fs.readFileSync(file);
             core.debug(`sourcePath: ${sourcePath}`);
             core.debug(`file: ${file}`);
-            const key = path.join(keyPrefix, path.relative(sourcePath, file));
+            const key = path.join(s3KeyPrefix, path.relative(sourcePath, file));
             core.debug(`resulting key: ${key}`);
             return upload({
                 Key: key,
@@ -156,7 +156,7 @@ const run = async () => {
                 ContentType: lookup(file) || 'application/octet-stream',
             });
         }));
-        await setDeploymentStatus(deploymentId, 'success', `https://${bucketName}/${keyPrefix}/`);
+        await setDeploymentStatus(deploymentId, 'success', `https://${bucketName}/${s3KeyPrefix}/`);
     } catch (err) {
         await setDeploymentStatus(deploymentId, 'failure');
         throw err;
