@@ -22,7 +22,7 @@ if (typeof githubRef !== 'string') {
 const githubToken = core.getInput('githubToken');
 const octokit = getOctokit(githubToken);
 
-const evt = JSON.parse(fs.readFileSync(githubEventPath, 'utf8'));
+const githubEvent = JSON.parse(fs.readFileSync(githubEventPath, 'utf8'));
 
 const createRef = (githubRef: string) => {
   // githubRef is in the form 'refs/heads/branch_name' or 'refs/tags/tag_name'
@@ -61,9 +61,9 @@ let githubDeploymentRef: string;
 let s3KeyPrefix = `builds/${context.repo.owner}/${context.repo.repo}/`;
 let githubEnvironmentName = 'staging/';
 if (context.eventName === 'pull_request') {
-    githubDeploymentRef = evt.pull_request.head.sha;
-    s3KeyPrefix += `pull/${evt.pull_request.number}`;
-    githubEnvironmentName += `pull/${evt.pull_request.number}`;
+    githubDeploymentRef = githubEvent.pull_request.head.sha;
+    s3KeyPrefix += `pull/${githubEvent.pull_request.number}`;
+    githubEnvironmentName += `pull/${githubEvent.pull_request.number}`;
 } else if (context.eventName === 'push' && ref !== null && ref.type === 'head' && ref.name === 'main') {
     githubDeploymentRef = context.sha;
     s3KeyPrefix += 'main';
