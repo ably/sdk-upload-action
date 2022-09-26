@@ -53,7 +53,7 @@ const createRef = (githubRef: string) => {
 
 const ref = createRef(githubRef)
 
-const bucketName = 'sdk.ably.com';
+const s3BucketName = 'sdk.ably.com';
 const sourcePath = path.resolve(core.getInput('sourcePath'));
 const artifactName = core.getInput('artifactName');
 
@@ -150,13 +150,13 @@ const run = async () => {
             core.debug(`resulting key: ${key}`);
             return upload({
                 Key: key,
-                Bucket: bucketName,
+                Bucket: s3BucketName,
                 Body: body,
                 ACL: 'public-read',
                 ContentType: lookup(file) || 'application/octet-stream',
             });
         }));
-        await setDeploymentStatus(deploymentId, 'success', `https://${bucketName}/${s3KeyPrefix}/`);
+        await setDeploymentStatus(deploymentId, 'success', `https://${s3BucketName}/${s3KeyPrefix}/`);
     } catch (err) {
         await setDeploymentStatus(deploymentId, 'failure');
         throw err;
