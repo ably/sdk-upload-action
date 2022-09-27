@@ -16,7 +16,7 @@ steps:
       aws-region: eu-west-2
       role-to-assume: arn:aws:iam::${{ secrets.ABLY_AWS_ACCOUNT_ID_SDK }}:role/ably-sdk-builds-<REPO-NAME>
       role-session-name: "${{ github.run_id }}-${{ github.run_number }}"
-  - uses: ably/sdk-upload-action@v1
+  - uses: ably/sdk-upload-action@v2
     with:
       sourcePath: doc/api
       githubToken: ${{ secrets.GITHUB_TOKEN }}

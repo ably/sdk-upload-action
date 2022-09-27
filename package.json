@@ -1,6 +1,6 @@
 {
   "name": "@ably/sdk-upload-action",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "GitHub Action for use in Ably SDK repository workflows, uploading built artifacts to the SDK Team's Amazon S3 bucket (presented at sdk.ably.com).",
   "main": "index.js",
   "scripts": {
