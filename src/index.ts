@@ -108,7 +108,7 @@ const createDeployment = async () => {
         ref: githubDeploymentRef,
         task: artifactName || undefined,
         required_contexts: [],
-        githubEnvironmentName,
+        environment: githubEnvironmentName,
         auto_merge: false,
     });
     if (![201, 202].includes(response.status)) {
