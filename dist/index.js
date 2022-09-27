@@ -144,7 +144,7 @@ const upload = (params) => __awaiter(void 0, void 0, void 0, function* () {
     core.info(`uploaded: ${params.Key}`);
 });
 const createDeployment = () => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield octokit.repos.createDeployment(Object.assign(Object.assign({}, github_1.context.repo), { ref: githubDeploymentRef, task: artifactName, required_contexts: [], githubEnvironmentName, auto_merge: false }));
+    const response = yield octokit.repos.createDeployment(Object.assign(Object.assign({}, github_1.context.repo), { ref: githubDeploymentRef, task: (artifactName && artifactName.length > 0) ? artifactName : 'root', required_contexts: [], githubEnvironmentName, auto_merge: false }));
     if (![201, 202].includes(response.status)) {
         core.setFailed(`Failed to create deployment, received ${response.status} response status`);
         process.exit(1);
