@@ -106,7 +106,7 @@ const createDeployment = async () => {
     const response = await octokit.repos.createDeployment({
         ...context.repo,
         ref: githubDeploymentRef,
-        task: artifactName || 'root',
+        task: (artifactName && artifactName.length > 0) ? artifactName : 'root',
         required_contexts: [],
         githubEnvironmentName,
         auto_merge: false,
