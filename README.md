@@ -54,6 +54,8 @@ permissions:
 
 If you are unsure whether the appropriate IAM role has been configured, please speak to the Ably SDK team.
 
+See also: [Ably Engineering: SDK Team Guidance: `sdk.ably.com`](https://github.com/ably/engineering/blob/main/sdk/sdk.ably.com.md)
+
 ### `githubToken`
 
 The `githubToken` requires `write` access to the `deployments` permissions scope.
