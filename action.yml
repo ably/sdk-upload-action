@@ -21,3 +21,15 @@ inputs:
       If not supplied or supplied as an empty string then the artifacts are uploaded to S3 at root for this deployment context.
     required: false
     default: ''
+  mode:
+    description: |
+      Specify `"preempt"` in order use this action before content build in order to output the URL base.
+    required: false
+outputs:
+  url-base:
+    description: |
+      The URL base. For example:
+
+          https://sdk.ably.com/builds/ably/ably-flutter/pull/307/dartdoc/
+
+      When used in the Flutter SDK repository, with `artifactName` as `"dartdoc"`.
