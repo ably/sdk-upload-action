@@ -90,9 +90,9 @@ core.debug(`S3 Key Prefix: ${s3KeyPrefix}`);
 core.debug(`GitHub Environment Name: ${githubEnvironmentName}`);
 
 const urlBase = `https://${s3BucketName}/${s3KeyPrefix}/`;
+core.setOutput('url-base', urlBase);
 const runMode = core.getInput('mode');
 if (runMode === 'preempt') {
-  core.setOutput('url-base', urlBase);
   process.exit(0);
 }
 
