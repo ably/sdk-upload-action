@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.1.0](https://github.com/ably/sdk-upload-action/tree/v2.1.0)
+
+[Full Changelog](https://github.com/ably/sdk-upload-action/compare/v2.0.0...v2.1.0)
+
+[\#53](https://github.com/ably/sdk-upload-action/pull/53) adds related I/O for obtaining the URL base on `sdk.ably.com` ahead of artifact build.:
+
+- `mode` input
+- `url-base` output
+
 ## [2.0.0](https://github.com/ably/sdk-upload-action/tree/v2.0.0)
 
 [Full Changelog](https://github.com/ably/sdk-upload-action/compare/v1.3.0...v2.0.0)
