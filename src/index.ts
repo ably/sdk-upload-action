@@ -89,6 +89,13 @@ if (artifactName.length > 0) {
 core.debug(`S3 Key Prefix: ${s3KeyPrefix}`);
 core.debug(`GitHub Environment Name: ${githubEnvironmentName}`);
 
+const urlBase = `https://${s3BucketName}/${s3KeyPrefix}/`;
+const runMode = core.getInput('mode');
+if (runMode === 'preempt') {
+  core.setOutput('url-base', urlBase);
+  process.exit(0);
+}
+
 const s3ClientConfig: S3ClientConfig = {
     // RegionInputConfig
     region: 'eu-west-2',
@@ -163,7 +170,7 @@ const run = async () => {
                 ContentType: lookup(file) || 'application/octet-stream',
             });
         }));
-        await setDeploymentStatus(deploymentId, 'success', `https://${s3BucketName}/${s3KeyPrefix}/`);
+        await setDeploymentStatus(deploymentId, 'success', urlBase);
     } catch (err) {
         await setDeploymentStatus(deploymentId, 'failure');
         throw err;
