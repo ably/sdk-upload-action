@@ -4,6 +4,8 @@ This action automates the deployment of generated artifacts to our Ably SDK team
 
 ## Usage
 
+### Usage After Artifact Generation
+
 See [action.yml](action.yml) for explanations of each input.
 
 ```yaml
@@ -30,6 +32,19 @@ In the above example, `<REPO-NAME>` should be the Ably repository name (e.g. `ab
 - Artifacts generated from a pushed tag will be uploaded to `https://sdk.ably.com/builds/ably/${repository_name}/tag/${tag_name}/${artifactName}`.
 
 If `artifactName` is not specified, or specified as an empty string, then artifacts are pushed to the root of the upload context (i.e. dropping `/${artifactName}` from the URL structures outlined above).
+
+### Usage Before Artifact Generation
+
+There are times when the URL base on `sdk.ably.com` needs to be known ahead of artifact build.
+
+This action has an input called `mode` which can be set to `"preempt"` in order to obtain this information up front.
+
+If the preempt mode is requested then nothing will be uploaded to S3, however the action will emit an output called `url-base`,
+containing the URL base as a string value. For example:
+
+    https://sdk.ably.com/builds/ably/ably-flutter/pull/307/dartdoc/
+
+When used in the Flutter SDK repository, with `artifactName` as `"dartdoc"`.
 
 ## Permissions
 
