@@ -61,6 +61,11 @@ const sourcePath = path.resolve(core.getInput('sourcePath', {required: true}));
 // - Empty string indicates no value, i.e. artifact name not specified
 const artifactName = core.getInput('artifactName');
 
+// Optional landingPagePath:
+// - The getInput() method calls trim() for us by default (trimWhitespace: true)
+// - Empty string indicates no value, i.e. landingPagePath not specified
+const landingPagePath = core.getInput('landingPagePath');
+
 let githubDeploymentRef: string;
 let s3KeyPrefix = `builds/${context.repo.owner}/${context.repo.repo}/`;
 let githubEnvironmentName = 'staging/';
@@ -132,9 +137,9 @@ const setDeploymentStatus = async (id: number, state: 'in_progress' | 'success' 
         ...context.repo,
         deployment_id: id,
         state,
-        log_url: url,
-        target_url: url,
-        environment_url: url,
+        log_url: url + landingPagePath,
+        target_url: url + landingPagePath,
+        environment_url: url + landingPagePath,
         mediaType: {
             // 'flash' is needed to use the 'in_progress' state
             // 'ant-man' is needed to use the log_url property
