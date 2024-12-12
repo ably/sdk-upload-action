@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.2.0](https://github.com/ably/sdk-upload-action/tree/v2.2.0)
+
+[Full Changelog](https://github.com/ably/sdk-upload-action/compare/v2.1.0...v2.2.0)
+
+[\#57](https://github.com/ably/sdk-upload-action/pull/57) introduces a way to navigate to a particular page when viewing a deployment:
+[\#58](https://github.com/ably/sdk-upload-action/pull/58) adds related I/O for obtaining the `base-path` ahead of artifact build.:
+
+
+- `landingPagePath` input
+- `base-path` output
+
 ## [2.1.0](https://github.com/ably/sdk-upload-action/tree/v2.1.0)
 
 [Full Changelog](https://github.com/ably/sdk-upload-action/compare/v2.0.0...v2.1.0)

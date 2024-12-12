@@ -135,13 +135,16 @@ const createDeployment = async () => {
 }
 
 const setDeploymentStatus = async (id: number, state: 'in_progress' | 'success' | 'failure', url?: string) => {
+    // Set completeUrl if url exists; otherwise, it will remain undefined
+    const completeUrl = url ? `${url}${landingPagePath}` : undefined;
+
     await octokit.repos.createDeploymentStatus({
         ...context.repo,
         deployment_id: id,
         state,
-        log_url: url + landingPagePath,
-        target_url: url + landingPagePath,
-        environment_url: url + landingPagePath,
+        log_url: completeUrl,
+        target_url: completeUrl,
+        environment_url: completeUrl,
         mediaType: {
             // 'flash' is needed to use the 'in_progress' state
             // 'ant-man' is needed to use the log_url property
