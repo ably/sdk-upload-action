@@ -38,3 +38,10 @@ outputs:
           https://sdk.ably.com/builds/ably/ably-flutter/pull/307/dartdoc/
 
       When used in the Flutter SDK repository, with `artifactName` as `"dartdoc"`.
+  base-path:
+    description: |
+      The base path. For example:
+
+          /builds/ably/ably-flutter/pull/307/dartdoc/
+
+      Useful when needing to know the relative path.
