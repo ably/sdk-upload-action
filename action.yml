@@ -21,6 +21,11 @@ inputs:
       If not supplied or supplied as an empty string then the artifacts are uploaded to S3 at root for this deployment context.
     required: false
     default: ''
+  landingPagePath:
+    description: |
+      The extension applied to the baseURL to aid in navigating to the correct page. e.g. if this value is "/documentation/home", then opening a deployment will navigate to this page.
+    required: false
+    default: ''
   mode:
     description: |
       Specify `"preempt"` in order use this action before content build in order to output the URL base.
