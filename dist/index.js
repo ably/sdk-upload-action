@@ -133,6 +133,10 @@ const sourcePath = path_1.default.resolve(core.getInput('sourcePath', { required
 // - The getInput() method calls trim() for us by default (trimWhitespace: true)
 // - Empty string indicates no value, i.e. artifact name not specified
 const artifactName = core.getInput('artifactName');
+// Optional landingPagePath:
+// - The getInput() method calls trim() for us by default (trimWhitespace: true)
+// - Empty string indicates no value, i.e. landingPagePath not specified
+const landingPagePath = core.getInput('landingPagePath');
 let githubDeploymentRef;
 let s3KeyPrefix = `builds/${github_1.context.repo.owner}/${github_1.context.repo.repo}/`;
 let githubEnvironmentName = 'staging/';
@@ -163,6 +167,7 @@ core.debug(`S3 Key Prefix: ${s3KeyPrefix}`);
 core.debug(`GitHub Environment Name: ${githubEnvironmentName}`);
 const urlBase = `https://${s3BucketName}/${s3KeyPrefix}/`;
 core.setOutput('url-base', urlBase);
+core.setOutput('base-path', s3KeyPrefix);
 const runMode = core.getInput('mode');
 if (runMode === 'preempt') {
     process.exit(0);
@@ -187,7 +192,9 @@ const createDeployment = () => __awaiter(void 0, void 0, void 0, function* () {
     return response.data.id;
 });
 const setDeploymentStatus = (id, state, url) => __awaiter(void 0, void 0, void 0, function* () {
-    yield octokit.repos.createDeploymentStatus(Object.assign(Object.assign({}, github_1.context.repo), { deployment_id: id, state, log_url: url, target_url: url, environment_url: url, mediaType: {
+    // Set completeUrl if url exists; otherwise, it will remain undefined
+    const completeUrl = url ? `${url}${landingPagePath}` : undefined;
+    yield octokit.repos.createDeploymentStatus(Object.assign(Object.assign({}, github_1.context.repo), { deployment_id: id, state, log_url: completeUrl, target_url: completeUrl, environment_url: completeUrl, mediaType: {
             // 'flash' is needed to use the 'in_progress' state
             // 'ant-man' is needed to use the log_url property
             //  see https://octokit.github.io/rest.js/v18#repos-create-deployment-status
